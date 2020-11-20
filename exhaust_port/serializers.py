@@ -36,3 +36,8 @@ class StarshipSerializer(serializers.ModelSerializer):
     class Meta:
         model = Starship
         fields = '__all__'
+        example = {
+            'name': 'Apple',
+            'amount': 6,
+            'price': '10.00',
+        }

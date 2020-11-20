@@ -1,11 +1,13 @@
-from rest_framework.decorators import api_view
+from drf_yasg import openapi
+from drf_yasg.utils import swagger_auto_schema
+from rest_framework.decorators import api_view, action
 from rest_framework.views import APIView, status  # import '*' is not the best practice
 from exhaust_port.models import XWing, DefenceTower, Film, Starship, Specie, Planet
 import math
-import json
 from rest_framework.response import Response
 from exhaust_port import serializers
-
+from APISureConnector.apisureconnector import APISureConnector
+from pprint import pp
 
 class xwinglist(APIView):
     # Does something to get xwings
@@ -67,6 +69,12 @@ def _object_does_not_exist(object, id):
 
 
 # List all towers, add new tower
+@swagger_auto_schema(
+    methods=['GET', 'POST'],
+    operation_id='all_towers',
+    operation_description='Retrieve All Towers',
+    responses={200: openapi.Response('All Towers', serializers.DefenceTowerSerializer()),
+               404: openapi.Response('Not Found')})
 @api_view(['GET', 'POST'])
 def all_towers(request):
     if request.method == 'POST':
@@ -147,6 +155,12 @@ def get_tower_by_user(request):
         return Response(_msg('Destroyed {} towers'.format(counter)))
 
 
+@swagger_auto_schema(
+    methods=['GET', 'POST'],
+    operation_id='object_detail_extra',
+    operation_description='Retrieve All Starships',
+    responses={200: openapi.Response('All starships', serializers.StarshipSerializer(),examples={200:'blabla',404:'not found'}),
+               404: openapi.Response('Not Found')})
 @api_view(['GET', 'POST'])
 def all_starships(request):
     if request.method == 'GET':
@@ -216,3 +230,18 @@ def evacuate_planet(request, **kwargs):
          'passengers': starship.passengers,
          'ships_needed': ships_needed}
     )
+
+@api_view(['POST'])
+def send_guarantee(request, **kwargs):
+    connector = APISureConnector(client_id="gAtxkHbIAwDOHnSTajn0p0tN4V6Yhk1B",
+                                 client_secret="80OdKmebSkWlpkGP")
+
+    url = 'https://api.apisure.io/mapi_base/v1/Guarantee/Guarantee/Apply'
+
+
+    response = connector.send_request(url=url, data=request.data)
+    print(response)
+    pp(response.json())
+
+    return Response(response.json(), status=response.status_code)
+

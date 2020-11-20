@@ -25,7 +25,8 @@ SECRET_KEY = "+9&y5t^5ax!&r=^+yh-ms07(d9u78wri(yb3*amupb*)-sjer)"
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
+
 
 
 # Application definition
@@ -38,7 +39,17 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "exhaust_port.apps.ExhaustPortConfig",
+    "apisure_guarantee.apps.GuaranteeConfig",
+    "corsheaders",
+    'drf_yasg',
 ]
+
+REST_FRAMEWORK = { 'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.coreapi.AutoSchema' }
+
+SWAGGER_SETTINGS = {
+    'DEFAULT_AUTO_SCHEMA_CLASS': 'drf_yasg_examples.SwaggerAutoSchema',
+}
+
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -48,9 +59,26 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.common.CommonMiddleware'
 ]
 
 ROOT_URLCONF = "death_star.urls"
+
+CORS_ALLOW_ALL_ORIGINS = True
+
+CORS_ALLOW_HEADERS = [
+    'accept',
+    'accept-encoding',
+    'authorization',
+    'content-type',
+    'dnt',
+    'origin',
+    'user-agent',
+    'x-csrftoken',
+    'x-requested-with',
+]
+
 
 TEMPLATES = [
     {
@@ -80,6 +108,19 @@ DATABASES = {
         "NAME": os.path.join(BASE_DIR, "db.sqlite3"),
     }
 }
+
+# DATABASES = {
+#    'default': {
+#        'ENGINE': "django_pyodbc",
+#        'HOST': "localhost",
+#        'USER': "DNG200",
+#        'PASSWORD': "dng200",
+#        'NAME': "DNG200",
+#        'OPTIONS': {
+#            'host_is_server': True
+#        },
+#    }
+# }
 
 
 # Password validation

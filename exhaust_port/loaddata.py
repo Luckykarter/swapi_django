@@ -5,7 +5,7 @@ def load_data_from_swapi():
     # to avoid loading the data from SWAPI every time on application loading
     # (to save time during tests)
     # the flag might be set to False - only local data from DB will be used
-    RELOAD_DATA = True
+    RELOAD_DATA = False
 
     if RELOAD_DATA:
         URL = "https://swapi.dev/api/"

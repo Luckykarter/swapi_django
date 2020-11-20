@@ -33,6 +33,18 @@ class Starship(models.Model):
     passengers = models.IntegerField()
     films = models.ManyToManyField(Film)
 
+    CATEGORY = [
+        ('F', 'Food'),
+        ('L', 'Living Item'),
+    ]
+
+    category = models.CharField(
+        verbose_name='Category',
+        max_length=1,
+        choices=CATEGORY,
+        default='F'
+    )
+
     def load(self, starship: dict):
         self.id = get_id_from_url(starship.get('url'))
         self.name = starship.get('name', '?')
