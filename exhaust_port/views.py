@@ -91,6 +91,12 @@ def all_towers(request):
 
 
 # list tower by ID
+@swagger_auto_schema(
+    methods=['GET', 'DELETE'],
+    operation_id='get_tower_by_id',
+    operation_description='Retrieve/Add Tower by ID',
+    responses={200: openapi.Response('Tower', serializers.DefenceTowerSerializer()),
+               404: openapi.Response('Not Found')})
 @api_view(['GET', 'DELETE'])
 def get_tower_by_id(request, **kwargs):
     pk = kwargs.get('pk')
@@ -112,6 +118,12 @@ def get_tower_by_id(request, **kwargs):
 
 
 # I want to be able to get all towers targeting given xwing
+@swagger_auto_schema(
+    methods=['GET'],
+    operation_id='get_tower_by_xwing_id',
+    operation_description='Retrieve Tower targeting Xwing',
+    responses={200: openapi.Response('Tower', serializers.DefenceTowerSerializer()),
+               404: openapi.Response('Not Found')})
 @api_view(['GET'])
 def get_tower_by_xwing_id(request, **kwargs):
     pk_xwing = kwargs.get('pk')
@@ -131,6 +143,12 @@ def get_tower_by_xwing_id(request, **kwargs):
 
 
 # list all towers targeting MY xwing
+@swagger_auto_schema(
+    methods=['GET'],
+    operation_id='get_tower_by_user',
+    operation_description='Retrieve Tower targeting Xwing',
+    responses={200: openapi.Response('Tower', serializers.DefenceTowerSerializer()),
+               404: openapi.Response('Not Found')})
 @api_view(['GET', 'DELETE'])
 def get_tower_by_user(request):
     user = request.user
@@ -157,9 +175,9 @@ def get_tower_by_user(request):
 
 @swagger_auto_schema(
     methods=['GET', 'POST'],
-    operation_id='object_detail_extra',
+    operation_id='all_starships',
     operation_description='Retrieve All Starships',
-    responses={200: openapi.Response('All starships', serializers.StarshipSerializer(),examples={200:'blabla',404:'not found'}),
+    responses={200: openapi.Response('All starships', serializers.StarshipSerializer()),
                404: openapi.Response('Not Found')})
 @api_view(['GET', 'POST'])
 def all_starships(request):
@@ -176,6 +194,12 @@ def all_starships(request):
         return Response(_msg('Starship {} id: {} is created'.format(starship.name, starship.id)))
 
 
+@swagger_auto_schema(
+    methods=['GET'],
+    operation_id='get_species_by_starship',
+    operation_description='Get species that seen given starship',
+    responses={200: openapi.Response('Tower', serializers.SpecieSerializer()),
+               404: openapi.Response('Not Found')})
 @api_view(['GET'])
 def get_species_by_starship(request, **kwargs):
     starship_id = kwargs.get('pk')
@@ -203,6 +227,10 @@ def get_species_by_producer(request, **kwargs):
     return Response(serializer.data)
 
 
+@swagger_auto_schema(
+    methods=['GET'],
+    operation_id='evacuate_planet',
+    operation_description='Get number of given ships to evacuate planet')
 @api_view(['GET'])
 def evacuate_planet(request, **kwargs):
     planet_id = kwargs.get('planet_id')
@@ -231,17 +259,4 @@ def evacuate_planet(request, **kwargs):
          'ships_needed': ships_needed}
     )
 
-@api_view(['POST'])
-def send_guarantee(request, **kwargs):
-    connector = APISureConnector(client_id="gAtxkHbIAwDOHnSTajn0p0tN4V6Yhk1B",
-                                 client_secret="80OdKmebSkWlpkGP")
-
-    url = 'https://api.apisure.io/mapi_base/v1/Guarantee/Guarantee/Apply'
-
-
-    response = connector.send_request(url=url, data=request.data)
-    print(response)
-    pp(response.json())
-
-    return Response(response.json(), status=response.status_code)
 

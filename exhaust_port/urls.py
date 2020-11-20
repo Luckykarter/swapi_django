@@ -13,10 +13,5 @@ urlpatterns = [
     path('species/starships/<int:pk>', views.get_species_by_starship),
     path('species/starships/producers/<str:name>', views.get_species_by_producer),
     path('evacuate_planet/<int:planet_id>/starships/<int:starship_id>', views.evacuate_planet),
-
-    path('guarantee/', views.send_guarantee),
-
-
-
 ]
 
